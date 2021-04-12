@@ -1,56 +1,20 @@
 import Ceramic from '@ceramicnetwork/core'
 import CeramicClient from '@ceramicnetwork/http-client'
-import { Ed25519Provider } from 'key-did-provider-ed25519'
 import tmp from 'tmp-promise'
-import IPFS from 'ipfs-core'
 import CeramicDaemon from '../ceramic-daemon'
-import { AnchorStatus, CeramicApi, Doctype, DoctypeUtils, IpfsApi } from '@ceramicnetwork/common';
+import { AnchorStatus, Doctype, DoctypeUtils, IpfsApi } from '@ceramicnetwork/common';
 import { TileDoctypeHandler } from "@ceramicnetwork/doctype-tile-handler"
 import { TileDoctype } from "@ceramicnetwork/doctype-tile";
 import { filter, take } from "rxjs/operators"
-import * as u8a from 'uint8arrays'
-import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
-import KeyDidResolver from 'key-did-resolver'
-import { Resolver } from "did-resolver"
-import { DID } from 'dids'
 
-import dagJose from 'dag-jose'
-import { sha256 } from 'multiformats/hashes/sha2'
-import legacy from 'multiformats/legacy'
 import DocID from "@ceramicnetwork/docid";
+import { createIPFS } from './create-ipfs';
+import { makeDID } from './make-did';
 
-const seed = u8a.fromString('6e34b2e1a9624113d81ece8a8a22e6e97f0e145c25c1d4d2d0e62753b4060c83', 'base16')
+const seed = 'SEED'
 const port = 7777
 const apiUrl = 'http://localhost:' + port
 const topic = '/ceramic'
-
-/**
- * Create an IPFS instance
- * @param overrideConfig - IFPS config for override
- */
-const createIPFS = (overrideConfig: Record<string, unknown> = {}): Promise<IpfsApi> => {
-    const hasher = {}
-    hasher[sha256.code] = sha256
-    const format = legacy(dagJose, {hashes: hasher})
-
-    const config = {
-        ipld: { formats: [format] },
-    }
-
-    Object.assign(config, overrideConfig)
-    return IPFS.create(config)
-}
-
-const makeDID = function(seed: Uint8Array, ceramic: CeramicApi): DID {
-    const provider = new Ed25519Provider(seed)
-
-    const keyDidResolver = KeyDidResolver.getResolver()
-    const threeIdResolver = ThreeIdResolver.getResolver(ceramic)
-    const resolver = new Resolver({
-        ...threeIdResolver, ...keyDidResolver,
-    })
-    return new DID({ provider, resolver })
-}
 
 describe('Ceramic interop: core <> http-client', () => {
     jest.setTimeout(30000)
@@ -63,12 +27,16 @@ describe('Ceramic interop: core <> http-client', () => {
     beforeAll(async () => {
         tmpFolder = await tmp.dir({ unsafeCleanup: true })
         ipfs = await createIPFS({
-            repo: `${tmpFolder.path}/ipfs${5011}/`, config: {
-                Addresses: { Swarm: [`/ip4/127.0.0.1/tcp/${5011}`] }, Discovery: {
-                    MDNS: { Enabled: false }, webRTCStar: { Enabled: false }
-                }, Bootstrap: []
-            }
-        })
+          repo: `${tmpFolder.path}/ipfs${5011}/`,
+          config: {
+            Addresses: { Swarm: [`/ip4/127.0.0.1/tcp/${5011}`] },
+            Discovery: {
+              MDNS: { Enabled: false },
+              webRTCStar: { Enabled: false },
+            },
+            Bootstrap: [],
+          },
+        });
         if (!ipfs.pubsub) {
             ipfs.pubsub = {}
         }
