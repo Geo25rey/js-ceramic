@@ -58,6 +58,7 @@ describe('Ceramic interop: core <> http-client', () => {
         core._doctypeHandlers.add(doctypeHandler)
 
         daemon = new CeramicDaemon(core, { port, debug: false })
+        await daemon.listen()
         client = new CeramicClient(apiUrl, { docSyncInterval: 500 })
 
         await core.setDID(makeDID(seed, core))
