@@ -6,9 +6,10 @@ import KeyDidResolver from 'key-did-resolver';
 import { Resolver } from 'did-resolver';
 import * as sha256 from '@stablelib/sha256';
 import * as uint8arrays from 'uint8arrays';
+import * as random from '@stablelib/random'
 
-export function makeDID(seed: string, ceramic: CeramicApi): DID {
-  const digest = sha256.hash(uint8arrays.fromString(seed));
+export function makeDID(ceramic: CeramicApi, seed?: string): DID {
+  const digest = seed ? sha256.hash(uint8arrays.fromString(seed)) : random.randomBytes(32);
   const provider = new Ed25519Provider(digest);
 
   const keyDidResolver = KeyDidResolver.getResolver();

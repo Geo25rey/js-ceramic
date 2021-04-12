@@ -61,8 +61,8 @@ describe('Ceramic interop: core <> http-client', () => {
         await daemon.listen()
         client = new CeramicClient(apiUrl, { docSyncInterval: 500 })
 
-        await core.setDID(makeDID(seed, core))
-        await client.setDID(makeDID(seed, client))
+        await core.setDID(makeDID(core, seed))
+        await client.setDID(makeDID(client, seed))
     })
 
     afterEach(async () => {

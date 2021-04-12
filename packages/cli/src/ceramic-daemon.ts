@@ -49,7 +49,7 @@ interface MultiQueries {
   queries: Array<MultiQuery>
 }
 
-function makeCeramicConfig (opts: CreateOpts): CeramicConfig {
+export function makeCeramicConfig (opts: CreateOpts): CeramicConfig {
   const loggerProvider = new LoggerProvider(opts.loggerConfig, (logPath: string) => { return new RotatingFileStream(logPath, true)})
   const ceramicConfig: CeramicConfig = {
     loggerProvider,
@@ -75,15 +75,6 @@ function makeCeramicConfig (opts: CreateOpts): CeramicConfig {
 
   if (opts.ipfsPinningEndpoints) {
     ceramicConfig.ipfsPinningEndpoints = opts.ipfsPinningEndpoints
-  }
-
-  if (opts.loggerConfig?.logToFiles) {
-    // TODO remove when LoggerProviderOld is removed from 'common' package
-    ceramicConfig.logToFilesPlugin = {
-      plugin: LogToFiles.main,
-      state: {blockedFiles: {}},
-      options: {logPath: opts.loggerConfig.logDirectory}
-    }
   }
 
   return ceramicConfig
