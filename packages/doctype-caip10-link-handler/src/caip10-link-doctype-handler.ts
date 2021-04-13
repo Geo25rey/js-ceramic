@@ -17,6 +17,10 @@ import {
 const IPFS_GET_TIMEOUT = 60000 // 1 minute
 
 export class Caip10LinkDoctypeHandler implements DoctypeHandler<Caip10LinkDoctype> {
+    get type(): number {
+      return Caip10LinkDoctype.DOCTYPE_ID
+    }
+
     /**
      * Gets doctype name
      */
@@ -63,7 +67,7 @@ export class Caip10LinkDoctypeHandler implements DoctypeHandler<Caip10LinkDoctyp
 
         // TODO - verify genesis commit
         const state = {
-            doctype: Caip10LinkDoctype.DOCTYPE_NAME,
+            type: Caip10LinkDoctype.DOCTYPE_ID,
             content: null,
             next: {
                 content: null

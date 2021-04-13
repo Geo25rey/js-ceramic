@@ -101,7 +101,7 @@ export interface LogEntry {
  * Document state
  */
 export interface DocState {
-    doctype: string
+    type: number
     content: any
     next?: DocNext
     metadata: DocMetadata
@@ -134,11 +134,11 @@ export abstract class Doctype extends Observable<DocState> implements DocStateHo
     }
 
     get id(): StreamID {
-        return new StreamID(this.state$.value.doctype, this.state$.value.log[0].cid)
+        return new StreamID(this.state$.value.type, this.state$.value.log[0].cid)
     }
 
-    get doctype(): string {
-        return this.state$.value.doctype
+    get doctype(): number {
+        return this.state$.value.type
     }
 
     get api(): CeramicApi {
@@ -225,6 +225,8 @@ export interface DoctypeConstructor<T extends Doctype> {
  * Describes document type handler functionality
  */
 export interface DoctypeHandler<T extends Doctype> {
+    type: number
+
     /**
      * The string name of the doctype
      */

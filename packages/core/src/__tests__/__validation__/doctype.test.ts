@@ -3,10 +3,11 @@ import { mock } from 'jest-mock-extended'
 import Utils from '../../utils'
 import { CeramicApi, Doctype, DocState, TestUtils, CommitType } from '@ceramicnetwork/common';
 import CID from 'cids'
+import { TileDoctype } from '@ceramicnetwork/doctype-tile';
 
 const FAKE_CID = new CID('bafybeig6xv5nwphfmvcnektpnojts33jqcuam7bmye2pb54adnrtccjlsu');
 
-class BasicDoctypeWithContent extends Doctype {
+class BasicDoctypeWithContent extends TileDoctype {
     makeReadOnly() {
         throw new Error('Not implemented')
     }
@@ -30,7 +31,7 @@ describe('Doctype', () => {
     beforeAll(() => {
         const docSchemaState = {
           content: schema,
-          doctype: 'tile',
+          type: 0,
           metadata: {
             controllers: [],
             schema: 'ceramic://1234567'
@@ -53,7 +54,7 @@ describe('Doctype', () => {
 
     it('should pass schema validation', async () => {
         const state = {
-          doctype: 'tile',
+          type: 0,
           metadata: {
             controllers: [],
             schema: 'ceramic://1234567'
@@ -75,7 +76,7 @@ describe('Doctype', () => {
 
     it('should fail schema validation', async () => {
         const state = {
-          doctype: 'tile',
+          type: 0,
           metadata: {
             controllers: [],
             schema: 'ceramic://1234567'

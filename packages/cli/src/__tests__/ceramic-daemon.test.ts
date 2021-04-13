@@ -131,6 +131,7 @@ describe('Ceramic interop: core <> http-client', () => {
         delete state2.log
         delete state1.metadata.unique
         delete state2.metadata.unique
+        delete state2.doctype
 
         expect(state1).toEqual(state2)
     })

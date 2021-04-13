@@ -63,7 +63,7 @@ export default class CeramicClient implements CeramicApi {
   public readonly context: Context
 
   private readonly _config: CeramicClientConfig
-  public readonly _doctypeConstructors: Record<string, DoctypeConstructor<Doctype>>
+  public readonly _doctypeConstructors: Record<number, DoctypeConstructor<Doctype>>
 
   constructor (apiHost: string = CERAMIC_HOST, config: Partial<CeramicClientConfig> = {}) {
     this._config = { ...DEFAULT_CLIENT_CONFIG, ...config }
@@ -77,8 +77,8 @@ export default class CeramicClient implements CeramicApi {
     this.pin = this._initPinApi()
 
     this._doctypeConstructors = {
-      'tile': TileDoctype,
-      'caip10-link': Caip10LinkDoctype
+      [TileDoctype.DOCTYPE_ID]: TileDoctype,
+      [Caip10LinkDoctype.DOCTYPE_ID]: Caip10LinkDoctype
     }
   }
 
@@ -186,17 +186,17 @@ export default class CeramicClient implements CeramicApi {
     this._doctypeConstructors[doctypeHandler.name] = doctypeHandler.doctype
   }
 
-  findDoctypeConstructor<T extends Doctype>(doctype: string) {
-    const constructor = this._doctypeConstructors[doctype]
+  private findDoctypeConstructor<T extends Doctype>(type: number) {
+    const constructor = this._doctypeConstructors[type]
     if (constructor) {
       return constructor as DoctypeConstructor<T>
     } else {
-      throw new Error(`Failed to find doctype constructor for doctype ${doctype}`)
+      throw new Error(`Failed to find doctype constructor for doctype ${type}`)
     }
   }
 
   private buildDoctype<T extends Doctype = Doctype>(document: Document) {
-    const doctypeConstructor = this.findDoctypeConstructor<T>(document.state.doctype)
+    const doctypeConstructor = this.findDoctypeConstructor<T>(document.state.type)
     return new doctypeConstructor(document, this.context)
   }
 

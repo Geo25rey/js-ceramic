@@ -8,8 +8,9 @@ import {
     IpfsApi,
     SignedCommit, SignedCommitContainer
 } from "../index"
-import { AnchorStatus, DocState, Doctype, LogEntry } from "../doctype"
+import { AnchorStatus, DocState, LogEntry } from "../doctype"
 import { DagJWS } from "dids"
+import { StreamType } from '@ceramicnetwork/streamid';
 
 /**
  * Doctype related utils
@@ -82,8 +83,8 @@ export class DoctypeUtils {
      * Serializes doctype state for over the network transfer
      * @param state - Doctype state
      */
-    static serializeState(state: any): any {
-        const cloned = cloneDeep(state)
+    static serializeState(state: DocState): any {
+        const cloned = cloneDeep(state) as any
 
         cloned.log = cloned.log.map((entry: LogEntry) => ({ ...entry, cid: entry.cid.toString() }))
         if (cloned.anchorStatus != null) {
@@ -99,6 +100,9 @@ export class DoctypeUtils {
         if (cloned.lastAnchored != null) {
             cloned.lastAnchored = cloned.lastAnchored.toString()
         }
+
+        cloned.doctype = StreamType.nameByIndex(cloned.type)
+
         return cloned
     }
 
@@ -108,6 +112,11 @@ export class DoctypeUtils {
      */
     static deserializeState(state: any): DocState {
         const cloned = cloneDeep(state)
+
+        if (cloned.doctype) {
+          cloned.type = StreamType.indexByName(cloned.doctype)
+          delete cloned.doctype
+        }
 
         cloned.log = cloned.log.map((entry: any): LogEntry => ({ ...entry, cid: new CID(entry.cid) }))
         if (cloned.anchorProof) {

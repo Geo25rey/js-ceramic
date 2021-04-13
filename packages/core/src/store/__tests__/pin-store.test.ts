@@ -10,6 +10,7 @@ import {
   CommitType,
   TestUtils,
 } from '@ceramicnetwork/common';
+import { TileDoctype } from '@ceramicnetwork/doctype-tile';
 
 let stateStore: StateStore
 let pinning: PinningBackend
@@ -36,7 +37,7 @@ beforeEach(() => {
 })
 
 const state: DocState = {
-    doctype: 'tile',
+    type: 0,
     content: {num: 0},
     metadata: {
         controllers: ['']
@@ -46,7 +47,7 @@ const state: DocState = {
     log: [{ cid: new CID('QmSnuWmxptJZdLJpKRarxBMS2Ju2oANVrgbr2xWbie9b2D'), type: CommitType.GENESIS }]
 }
 
-class FakeType extends Doctype {
+class FakeType extends TileDoctype {
     makeReadOnly() {
         throw new Error("Method not implemented.");
     }
