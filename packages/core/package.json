@@ -49,7 +49,7 @@
     "did-jwt": "^5.0.0",
     "did-resolver": "^3.0.1",
     "dids": "^2.0.0",
-    "ipld-dag-cbor": "^0.17.0",
+    "ipld-dag-cbor": "^0.18.0",
     "key-did-resolver": "^1.1.1",
     "level-ts": "^2.0.5",
     "lodash.clonedeep": "^4.5.0",
