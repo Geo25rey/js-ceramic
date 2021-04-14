@@ -105,6 +105,10 @@ export class TileDoctype<T = Record<string, any>> extends Doctype {
         return this._getContent()
     }
 
+    get doctype(): string {
+      return TileDoctype.DOCTYPE_NAME;
+    }
+
     /**
      * Creates a Tile document.
      * @param ceramic - Instance of CeramicAPI used to communicate with the Ceramic network

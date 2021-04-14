@@ -127,6 +127,8 @@ export interface DocStateHolder {
  * Describes common doctype attributes
  */
 export abstract class Doctype extends Observable<DocState> implements DocStateHolder {
+    abstract readonly doctype: string
+
     constructor(protected readonly state$: RunningStateLike, private _context: Context) {
         super(subscriber => {
           state$.subscribe(subscriber)
@@ -135,10 +137,6 @@ export abstract class Doctype extends Observable<DocState> implements DocStateHo
 
     get id(): StreamID {
         return new StreamID(this.state$.value.type, this.state$.value.log[0].cid)
-    }
-
-    get doctype(): number {
-        return this.state$.value.type
     }
 
     get api(): CeramicApi {
